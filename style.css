@@ -18,11 +18,11 @@
 }
 
 .wall {
-    background-color: blue;
+    background-color: rgb(0, 0, 0);
 }
 
 .power-pellet {
-    background-color: green;
+    background-color: #fad3cf;
     border-radius: 10px;
 }
 
