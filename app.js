@@ -215,6 +215,7 @@ function moveGhost(ghost) {
             score += 100
             squares[ghost.currentIndex].classList.add(ghost.className, 'ghost')
         }
+        checkGameOver()
     }, ghost.speed)
 }
 
