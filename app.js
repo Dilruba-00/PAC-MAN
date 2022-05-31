@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const grid = document.querySelector('.grid')
+
     const scoreDisplay = document.getElementById('score')
+    const grid = document.querySelector('.grid')
     const width= 28 //28 x 28 = 784 squares
     let score = 0
 
@@ -34,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
         1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,
         1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
         1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-
 
     ]
 
@@ -70,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //starting postion of pac-man
     let pacmanCurrentIndex = 490
-
     squares[pacmanCurrentIndex].classList.add('pac-man')
 
     //move pac-man
@@ -86,39 +85,40 @@ document.addEventListener('DOMContentLoaded', () => {
                     pacmanCurrentIndex -= 1
 
             //check if pacman is in the left exit
-            if((pacmanCurrentIndex - 1) === 363) {
+            if(squares[pacmanCurrentIndex - 1] === squares[363]) {
                 squares[pacmanCurrentIndex].classList.add('pac-man')
                 pacmanCurrentIndex = 391
                 squares[364].classList.remove('pac-man')
             }
-               
-                break
+            break
+
             case 38:
                 if(
                     pacmanCurrentIndex - width >= 0 && 
                     !squares[pacmanCurrentIndex -width].classList.contains('wall') && 
-                    !squares[pacmanCurrentIndex - width].classList.contains('ghost-lair')) 
+                    !squares[pacmanCurrentIndex -width].classList.contains('ghost-lair')) 
                     pacmanCurrentIndex -= width
                 break
+
             case 39:
                 if(
                     pacmanCurrentIndex % width < width - 1 && 
                     !squares[pacmanCurrentIndex +1].classList.contains('wall') && 
-                    !squares[pacmanCurrentIndex + 1 ].classList.contains('ghost-lair')) 
+                    !squares[pacmanCurrentIndex +1 ].classList.contains('ghost-lair')) 
                     pacmanCurrentIndex += 1
 
             //it pacman is in the index thats next index is 392, make it apper somewhere 
-            if((pacmanCurrentIndex + 1) === 392) {
+            if(squares[pacmanCurrentIndex + 1] === squares[392]) {
                 squares[pacmanCurrentIndex].classList.add('pac-man')
                 pacmanCurrentIndex = 364
                 squares[391].classList.remove('pac-man')
             }
-               
-                break
+            break
+
             case 40:
                 if(pacmanCurrentIndex + width < width * width && 
-                    !squares[pacmanCurrentIndex + width].classList.contains('wall') && 
-                    !squares[pacmanCurrentIndex + width].classList.contains('ghost-lair')) 
+                    !squares[pacmanCurrentIndex +width].classList.contains('wall') && 
+                    !squares[pacmanCurrentIndex +width].classList.contains('ghost-lair')) 
                     pacmanCurrentIndex += width   
                 break 
         }
@@ -127,8 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         pacDotEaten()
         powerPelletEaten()
-        //checkForGameOver()
-        //checkForWin()
+        checkForGameOver()
+        checkForWin()
         
     }
     document.addEventListener('keyup', movePacman)
@@ -178,7 +178,7 @@ ghosts = [
 //draw my ghoosts onto the grid 
 ghosts.forEach(ghost => {
     squares[ghost.currentIndex].classList.add(ghost.className)
-    squares[ghost.currentIndex].classList.add('grid')
+    squares[ghost.currentIndex].classList.add('ghost')
 })
 
 //move ALL the ghosts onto the grid
@@ -191,10 +191,10 @@ function moveGhost(ghost) {
 
     ghost.timerId = setInterval(function() {
         //if the next square your ghost is going to go in does NOT contain a wall and a ghost, you can go there
-        if(!squares[ghost.currentIndex + direction].classList.contains('wall') && !squares[ghost.currentIndex + direction].classList.contains('ghost')) {
+        if(!squares[ghost.currentIndex + direction].classList.contains('ghost') && !squares[ghost.currentIndex + direction].classList.contains('wall')) {
             //you can go here
             //remove all ghost related classes
-            //squares[ghost.currentIndex].classList.remove(ghost.className)
+            squares[ghost.currentIndex].classList.remove(ghost.className)
             squares[ghost.currentIndex].classList.remove(ghost.className, 'ghost', 'scared-ghost')
             //change the currentIndex to the new safe square
             ghost.currentIndex += direction
@@ -218,20 +218,23 @@ function moveGhost(ghost) {
     }, ghost.speed)
 }
 
+//check for a game over
+function checkGameOver() {
+    if(squares[pacmanCurrentIndex].classList.contains('ghost') && !squares[pacmanCurrentIndex].classList.contains('scared-ghost')) {
+        ghost.forEach(ghost => clearInterval(ghost.timerId))
+        document.removeEventListener('keyup', movePacman)
+        setTimeout(function() { alert("Game Over"); }, 500)
+    }
+}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+//check for a win - more is when this score is reached
+function checkForWin() {
+    if(score === 274) {
+        ghosts.forEach(ghost => clearInterval(ghost.timerId))
+        document.removeEventListener('keyup', movePacman)
+        setTimeout(function() { alert("Yone have WON!"); }, 500)
+    }
+}
 
 })
